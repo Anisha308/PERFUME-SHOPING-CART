@@ -15,10 +15,20 @@ const loadCategory = async (req, res) => {
 const addCategory = async (req, res) => {
     try {
         const name = req.body.name;
+        const description = req.body.description;
+
+        if (!name) {
+            const categories = await Category.find()
+            return res.render('categories',{message:"name field is required",categories})
+        }
+         if (!description) {
+            const categories = await Category.find()
+            return res.render('categories',{message:"category field is required",categories})
+        }
         const existingCategory = await Category.findOne({ name: name })
         if (existingCategory) {
             const categories = await Category.find()
-            res.render('categories', { message: 'name already exists' })
+            res.render('categories', { message: 'name already exists' ,categories})
 
         }
         else {
@@ -63,13 +73,33 @@ const loadUpdateCategory = async (req, res) => {
         console.log(error.message)
     }
 }
+const changeStatus = async (req, res) => {
+    try {
+        const category_id = req.query.id;
+        const category = await Category.findById(category_id);
 
+        if (category) {
+            const updatedList = !category.isListed;
+            var result = await Category.updateOne(
+                { _id: category.id },
+                { $set: { isListed: updatedList } }
+            );
+            await category.save();
+        }
+
+        res.redirect("/loadCategory");
+        //   console.log(result);
+    } catch (error) {
+        console.log(error.message);
+    }
+};
 
 module.exports = {
     loadCategory,
     addCategory,
     showCategory,
     updateCategory,
+    changeStatus,
     loadUpdateCategory,
     
 }

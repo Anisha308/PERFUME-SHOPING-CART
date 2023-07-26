@@ -1,60 +1,69 @@
 <%- include('../layouts/adminHeader.ejs') %>
 
-<body>
-  <div class="d-flex flex-row">
-    <div class="row">
-      <div class="col-md-6">
-        <nav class="sidebar sidebar-offcanvas" id="sidebar">
-          <!-- Sidebar content goes here -->
-          <ul class="nav">
-            <li class="nav-item">
-              <a class="nav-link" href="index.html">
-                <i class="typcn typcn-device-desktop menu-icon"></i>
-                <span class="menu-title">Dashboard</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" data-toggle="collapse" href="/loadUser" aria-expanded="false" aria-controls="ui-basic">
-                <i class="typcn typcn-document-text menu-icon"></i>
-                <span class="menu-title">User List</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" data-toggle="collapse" href="/loadCategory" aria-expanded="false" aria-controls="ui-basic">
-                <i class="typcn typcn-document-text menu-icon"></i>
-                <span class="menu-title">Category</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" data-toggle="collapse" href="/productList" aria-expanded="false" aria-controls="ui-basic">
-                <i class="typcn typcn-document-text menu-icon"></i>
-                <span class="menu-title">Product List</span>
-              </a>
-            </li>
-          </ul>
-        </nav>
-      </div>
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<div class="d-flex flex-row">
+  <div class="row">
+    <div class="col-md-6">
+      <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        <!-- Sidebar content goes here -->
+        <ul class="nav">
+          <li class="nav-item">
+            <a class="nav-link" href="index.html">
+              <i class="typcn typcn-device-desktop menu-icon"></i>
+              <span class="menu-title">Dashboard</span>
+
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="/loadUser" aria-expanded="false" aria-controls="ui-basic">
+              <i class="typcn typcn-document-text menu-icon"></i>
+              <span class="menu-title">user List</span>
+
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="/loadCategory" aria-expanded="false"
+              aria-controls="ui-basic">
+              <i class="typcn typcn-document-text menu-icon"></i>
+              <span class="menu-title">Category</span>
+
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="/productList" aria-expanded="false"
+              aria-controls="ui-basic">
+              <i class="typcn typcn-document-text menu-icon"></i>
+              <span class="menu-title">Product List</span>
+
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" data-toggle="collapse" href="/addquantity" aria-expanded="false"
+              aria-controls="ui-basic">
+              <i class="typcn typcn-document-text menu-icon"></i>
+              <span class="menu-title">Quantity List</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
     </div>
-
-  <section class="content-main p-5">
-    <div class="content-header">
-      <div>
-        <h2 class="content-title card-title">Product </h2>
-        <p>Add, edit or Change Status</p>
-      </div>
-      <div>
-        <input type="text" placeholder="Search Product" class="form-control bg-white">
-      </div>
+  </div>
+<section class="content-main p-5">
+  <div class="content-header">
+    <div>
+      <h2 class="content-title card-title">Product </h2>
+      <p>Add, edit or Change Status</p>
     </div>
-    <!-- <div class="card"> -->
-    <!-- <div class="card-body"> -->
-    <div class="row p-5">
-      <div class="col-md-3 p-5 shadow mb-5 bg-white rounded">
- <!-- <form action="/addProduct" method="post" > -->
-<form action="/addProduct" enctype="multipart/form-data" method="post">
+    <div>
+      <input type="text" placeholder="Search Product" class="form-control bg-white">
+    </div>
+  </div>
 
-
-
+  <div class="row">
+    <div class="col-md-4">
+      <div class="p-5 shadow mb-5 bg-white rounded">
+        <form action="/addProduct" method="post" enctype="multipart/form-data">
           <div class="row">
             <div class="col-md-9">
               <h6>1. General info</h6>
@@ -68,21 +77,22 @@
                 <label class="form-label">Description</label>
                 <textarea placeholder="Type here" class="form-control" rows="4" name="description"></textarea>
               </div>
-<div class="mb-4">
-  <label class="form-label">Category</label>
-  <select class="form-select" name="category">
-    <% category.forEach(function(category) { %>
-      <option value="<%=category._id%>">
-        <%= category.name %>
-      </option>
-      <% }); %>
-  </select>
-  <!-- <textarea placeholder="Type here" class="form-control" rows="4" name="description"></textarea> -->
-</div>
-            </div> <!-- col.// -->
-          </div> <!-- row.// -->
+              <div class="mb-4">
+                <label class="form-label">Category</label>
+                <select class="form-select" name="category">
+                  <% category.forEach(function(category) { %>
+                    <% if(category.isListed) { %>
+                      <option value="<%=category._id%>">
+                        <%= category.name %>
+                      </option>
+                      <% } %>
+                  <% }); %>
+                </select>
+              </div>
+             
+            </div>
+          </div>
 
-          
           <hr class="mb-4 mt-0">
           <div class="row">
             <div class="col-md-9">
@@ -93,116 +103,118 @@
                 <label class="form-label">Cost in INR</label>
                 <input type="text" placeholder="₹00.0" class="form-control" name="price">
               </div>
-            </div> <!-- col.// -->
-          </div> <!-- row.// -->
-  
+            </div>
+          </div>
+
           <hr class="mb-4 mt-0">
           <div class="row">
             <div class="col-md-9">
               <h6>3. Media</h6>
             </div>
             <div class="col-md-25">
-  
               <div class="mb-4">
-                <label class="form-label">Side View Image</label>
-                <!-- <input class="form-control" multiple type="file" name="images"> -->
-                <input class="form-control" multiple type="file" name="images" multiple>
-
+                <label class="form-label">Main Image</label>
+                <input class="form-control" multiple type="file" name="images">
               </div>
-  
             </div>
+            <!-- <div class="col-md-25">
+              <div class="mb-4">
+                <label class="form-label">Second Image</label>
+                <input class="form-control" multiple type="file" name="images">
+              </div>
+            </div>
+            <div class="col-md-25">
+              <div class="mb-4">
+                <label class="form-label">Third Image</label>
+                <input class="form-control" multiple type="file" name="images">
+              </div>
+            </div>-->
           </div>
+
           <div class="d-grid">
-       <button type="submit" class="btn btn-outline-danger">Create Product</button>
-            <p>
-              <%=(typeof message!=='undefined' )?message:""%>
-            </p>
-  
+            <button class="btn btn-outline-danger">Create Product</button>
+            <p><%=(typeof message!=='undefined' )?message:""%></p>
           </div>
         </form>
-  
       </div>
-      <div class="col-md-9 p-5">
-        <div class="table-responsive p-5 shadow mb-5 bg-white rounded">
-          <table class="table table-hover">
-            <thead class="table-danger">
-              <tr class="text-center">
-                <th>Product Image</th>
-                <th>product name</th>
-                <th>product description</th>
-                <th>category</th>
-                <th>Price</th>
-                
-                <th>Edit</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% product.forEach((item)=> { %>
-                <tr>
-                  <td class="text-center">
-                    <div class="left">
-                      
+    </div>
 
-                      <img src="../../public/uploads/1689586403006-34cb5fbbf943da8afb490f9286ad054b.jpg" class="img-sm img-thumbnail" style="height: 80px; width: 80px;" alt="Item"
-                        data-bs-toggle="modal" data-bs-target="#imageModal<%= item._id %>">
-                    </div>
-                  </td>
-                  <td class="text-center">
-                    <div class="info">
-                      <p class="mb-0">
-                        <%= item.name %>
-                      </p>
-                    </div>
-                  </td>
-                  <td class="text-center">
-                    <div class="info">
-                      <p class="mb-0">
-                        <%= item.description %>
-                      </p>
-                    </div>
-                  </td>
-                  <td class="text-center">
-                    <div class="info">
-                      <p class="mb-0">
-                        <%= getCategoryName(item.category) %>
-                      </p>
-                    </div>
-                  </td>
-                  <td class="text-center">
-                    <div class="info">
-                      <p class="mb-0">
-                        <%= item.price %>
-                      </p>
-                    </div>
-                  </td>
-                  <td class="text-center">
-                    <a class="dropdown-item" href="/editProductList?id=<%= item._id %>">Edit info</a>
-                  </td>
-                </tr>
-                <% }); %>
-            </tbody>
-          </table>
-        </div>
-      </div>
-  
-      <!-- Image Modals -->
-      <% product.forEach((item)=> { %>
-        <div class="modal fade" id="imageModal<%= item._id %>" tabindex="-1"
-          aria-labelledby="imageModalLabel<%= item._id %>" aria-hidden="true">
-          <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content">
-              <div class="modal-body">
-                <div id="carousel<%= item._id %>" class="carousel slide" data-bs-ride="carousel">
-                  <!-- Carousel Content Goes Here -->
+    <div class="col-md-8">
+      <div class="table-responsive p-5 shadow mb-5 bg-white rounded">
+        <table class="table table-hover">
+          <thead class="table-danger">
+            <tr class="text-center">
+              <th>Image</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Category</th>  
+              <th>Price</th>
+              <th>Edit</th>
+              <th>Delete</th>
+              <th>List/Unlist</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% product.forEach((item) => { %>
+            <tr>
+              <td class="text-center">
+                <div class="left">
+                  <img src="/uploads/<%= item.images[0] %>" class="img-sm img-thumbnail" alt="Item"
+                    data-bs-toggle="modal" data-bs-target="#imageModal<%= item._id %>"
+                    style="width:80px;height:fit-content">
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <% }); %>
-  
-    </div> <!-- .row // -->
-    </div> <!-- card body .// -->
-    </div> <!-- card .// -->
-  </section>
+                
+              </td>
+              
+              <td class="text-center">
+                <div class="info">
+                  <p class="mb-0">
+                    <%= item.name %>
+                  </p>
+                </div>
+              </td>
+              <td class="text-center">
+                <div class="info">
+                  <p class="mb-0">
+                    <%= item.description %>
+                  </p>
+                </div>
+              </td>
+              <td class="text-center">
+                <div class="info">
+                  <p class="mb-0">
+                    <%= getCategoryName(item.category) %>
+                  </p>
+                </div>
+              </td>
+             
+              <td class="text-center">
+                <div class="info">
+                  <p class="mb-0">
+                    <%= item.price %>
+                  </p>
+                </div>
+              </td>
+              <td class="text-center">
+                <a href="/editProductList?id=<%= item._id %>">Edit</a>
+              </td>
+              <td class="text-center">
+                <a href="/deleteProduct?id=<%= item._id %>">Delete</a>
+              </td>
+              <td class="text-center">
+                <% if (item.is_listed) { %>
+                  <a href="/changeProductstatus?id=<%= item._id %>">List</a>
+                <% } else { %>
+                  <a href="/changeProductstatus?id=<%= item._id %>">Unlist</a>
+                <% } %>
+              </td>
+            </tr>
+            <% }); %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
 <%- include('../layouts/adminFooter.ejs') %>

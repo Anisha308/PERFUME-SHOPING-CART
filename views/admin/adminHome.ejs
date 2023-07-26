@@ -36,8 +36,13 @@
 
               </a>
             </li>
-
-
+<li class="nav-item">
+  <a class="nav-link" data-toggle="collapse" href="/addquantity" aria-expanded="false"
+    aria-controls="ui-basic">
+    <i class="typcn typcn-document-text menu-icon"></i>
+    <span class="menu-title">Quantity List</span>
+  </a>
+</li>
           </ul>
         </nav>
       </div>
@@ -58,7 +63,12 @@
                 <tr>
                   <th scope="col">Name</th>
                   <th scope="col ">Email</th>
-                  <th scope="col ">Mobile No</th>
+                  <th scope="col">Mobile</th>
+                  <th scope="col ">HouseName</th>
+                  
+                  <th scope="col ">pincode</th>
+                  
+<th scope="col ">District</th>
                   <th scope="col ">Status</th>
                   <th scope="col ">Action</th>
                 </tr>
@@ -75,6 +85,15 @@
                     <td>
                       <%= user.mobile %>
                     </td>
+                    <%if(user.Address && user.Address.length>0){%>
+                    <td><%=user.Address[0].HouseName%></td>
+                    <td>
+                      <%=user.Address[0].pincode%>
+                    </td>
+                    <td>
+                      <%=user.Address[0].District%>
+                    </td>
+                  <%}%>
                     <% if (user.is_blocked==false) { %>
                       <td><span style="color: green;">Active</span></td>
                       <% } else { %>

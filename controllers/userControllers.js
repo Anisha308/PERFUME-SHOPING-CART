@@ -1,12 +1,18 @@
 const { UserDefinedMessageListInstance } = require('twilio/lib/rest/api/v2010/account/call/userDefinedMessage');
 const User = require('../models/usermodel');
+const Product = require('../models/productmodel')
 const bcrypt = require('bcrypt');
 
-const accountSid = "ACcf579c18a8281da4edd4ea3fa0a03e77";
-const authToken = "ba132c414ca532023f64056066344fdc";
+const Quantity = require('../models/quantitymodel')
 
-const twilio = require('twilio')(accountSid, authToken);
 
+const twilio = require('twilio')
+const dotenv = require("dotenv");
+dotenv.config();
+const accountSid = process.env.accountSid;
+const authToken = process.env.authToken;
+const twilioNumber = process.env.twilioNumber;
+const client = twilio(accountSid, authToken);
 const securePassword = async (password) => {
   try {
     const passwordHash = await bcrypt.hash(password, 10);
@@ -26,20 +32,35 @@ const loadRegister = async (req, res) => {
 
 const insertUser = async (req, res) => {
   try {
-    const email = req.body.email;
+    const { email,District,pincode,HouseName,password } = req.body;
     const existingUser = await User.findOne({ email: email });
     if (existingUser) {
-      return res.render('register', { message: "Email already exists" });
+      return res.render("register", { message: "Email already exists" });
     }
 
+
     const spassword = await securePassword(req.body.password);
+    const addressData = {
+      District,
+      pincode,
+      HouseName
+    };
+
+    // const addressData = {
+    //   District,
+    //   pincode,
+    //   HouseName
+    // }
+
     const user = new User({
       username: req.body.name,
       email: req.body.email,
       mobile: req.body.mobile,
+      Address: [addressData], // Store the address object in an array
       password: spassword,
-
     });
+
+    
 
     // Validation
 
@@ -50,18 +71,26 @@ const insertUser = async (req, res) => {
     }
 
     if (!/^\d{10}$/.test(req.body.mobile)) {
-      return res.render("register", { message: "Mobile number must be 10 digits" });
+      return res.render("register", {
+        message: "Mobile number must be 10 digits",
+      });
     }
     if (!/^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/.test(req.body.email)) {
       return res.render("register", { message: "Invalid email format" });
     }
 
     if (/\d/.test(req.body.name)) {
-      return res.render("register", { message: "Name should not contain numbers" });
+      return res.render("register", {
+        message: "Name should not contain numbers",
+      });
     }
 
     if (req.body.password !== req.body.confirmPassword) {
       return res.render("register", { message: "Passwords do not match" });
+    }
+
+    if (!user.username || !user.email || !user.mobile || !user.Address[0].District || !user.Address[0].pincode || !user.Address[0].HouseName) {
+      return res.render("register", { message: "all fields should be filled" });
     }
     // Generate a random OTP
     const otp = Math.floor(100000 + Math.random() * 900000);
@@ -70,35 +99,28 @@ const insertUser = async (req, res) => {
     // Send the OTP to the user's mobile number
     // await twilio.messages.create({
     //   body: `Your OTP: ${otp}`,
-    //   from: '+15416553228',
+    //   from: 'TwilioNumber',
     //   to: `+91${user.mobile}`,
     // })
 
     // Store the OTP and user data in the session
     req.session.otp = otp;
+    req.session.user_id = user._id;
     req.session.user = {
       username: user.username,
       email: user.email,
       mobile: user.mobile,
+      Address:user.Address,
       password: user.password,
-
     };
-
-    res.redirect('/verifyotp');
+// console.log(req.session.user)
+    res.render("verifyotp");
   } catch (error) {
     console.log(error.message);
-    return res.render("register", { message: "All fields should be filled" });
+    return res.render("register", { message: "an error occured" });
   }
 };
 
-// Login user method
-const loginLoad = async (req, res) => {
-  try {
-    res.render('login');
-  } catch (error) {
-    console.log(error.message);
-  }
-};
 const loadVerifyOTP = async (req, res) => {
   try {
     otpTimer = req.session.otpTimer || 0; // Get the OTP timer value from the session
@@ -107,6 +129,17 @@ const loadVerifyOTP = async (req, res) => {
     console.log(error.message);
   }
 };
+// Login user method
+const loginLoad = async (req, res) => {
+  try {
+    res.render('login');
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+
+
 
 //otp timer
 const startOtpTimer = (req, res, next) => {
@@ -135,6 +168,7 @@ const verifyOtp = async (req, res) => {
         username: userData.username,
         email: userData.email,
         mobile: userData.mobile,
+        Address:userData.Address,
         password: userData.password,
         is_admin: userData.is_admin,
       });
@@ -167,9 +201,10 @@ const resendOtp = async (req, res) => {
       res.status(400).json({ message: "Invalid or expired session" });
     }
     req.session.user = {
-      username: userData.username,
+      username: userData.name,
       email: userData.email,
       mobile: userData.mobile,
+      Address: userData.Address,
       password: userData.password,
       is_admin: userData.is_admin,
     };
@@ -183,46 +218,106 @@ const resendOtp = async (req, res) => {
 
 
 
+// const verifyLogin = async (req, res) => {
+//   try {
+//     const emailRegex = /^([a-zA-Z0-9\._]+)@([a-zA-Z0-9]+)\.([a-z]+)(\.[a-z]+)?$/;
+//     const email = req.body.email;
+//     const password = req.body.password;
+//     if (!email) {
+//       return res.render('login', { message: "Email must be filled" });
+//     }
+//     if (!emailRegex.test(email)) {
+//       return res.render('login', { message: "Invalid email format" });
+//     }
+//     if (!email || !password) {
+//       return res.render('login', { message: "Email and password are required" });
+//     }
+//     if (!password) {
+//       return res.render('login', { message: "Password must be filled" });
+//     }
+//     const userData = await User.findOne({ email: email });
+//     if (userData) {
+
+//       if (userData.is_blocked) {
+//         res.render('login', { message: "You are blocked from this site" })
+//       }
+
+//       const passwordMatch = await bcrypt.compare(password, userData.password);
+
+
+//       if (passwordMatch) {
+//         req.session.user = {
+//           name: userData.name,
+//           email: userData.email,
+//           mobile: userData.mobile,
+//            District: userData.District,
+//       pincode: userData.pincode,
+//       HouseName:userData.HouseName,
+       
+          
+//         };
+//         return res.redirect('/home');
+//       } else {
+//         return res.render('login', { message: "Email or password are incorrect" });
+//       }
+//     } else {
+//       return res.render('login', { message: "Email or password are incorrect" });
+//     }
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// };
+
+const { validationResult } = require("express-validator");
+
 const verifyLogin = async (req, res) => {
   try {
-    const emailRegex = /^([a-zA-Z0-9\._]+)@([a-zA-Z0-9]+)\.([a-z]+)(\.[a-z]+)?$/;
-    const email = req.body.email;
-    const password = req.body.password;
-    if (!email) {
-      return res.render('login', { message: "Email must be filled" });
+    // Validate form inputs using express-validator
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+    
+      return res.redirect(
+        "/login",
+        "Invalid input. Please check your email and password."
+      );
     }
-    if (!emailRegex.test(email)) {
-      return res.render('login', { message: "Invalid email format" });
-    }
-    if (!email || !password) {
-      return res.render('login', { message: "Email and password are required" });
-    }
-    if (!password) {
-      return res.render('login', { message: "Password must be filled" });
-    }
-    const userData = await User.findOne({ email: email });
-    if (userData) {
 
-      if (userData.is_blocked) {
-        res.render('login', { message: "You are blocked from this site" })
-      }
+    const { email, password } = req.body;
 
-      const passwordMatch = await bcrypt.compare(password, userData.password);
+    const userData = await User.findOne({ email });
 
-
-      if (passwordMatch) {
-        req.session.user = { name: userData.name };
-        return res.redirect('/home');
-      } else {
-        return res.render('login', { message: "Email or password are incorrect" });
-      }
-    } else {
-      return res.render('login', { message: "Email or password are incorrect" });
+    if (!userData) {
+     return res.render("login", { message: "Invalid email" });
     }
+
+    if (userData.is_blocked) {
+      res.render("login", { message: "You are blocked from this site" });
+    }
+
+    const passwordMatch = await bcrypt.compare(password, userData.password);
+
+    if (!passwordMatch) {
+       res.render("login", { message: "password is wrong" });
+    }
+
+    // Store relevant user data in the session (avoid storing the password)
+    req.session.user_id = userData._id;
+    req.session.user = {
+      name: userData.name,
+      email: userData.email,
+      mobile: userData.mobile,
+      District: userData.District,
+      pincode: userData.pincode,
+      HouseName: userData.HouseName,
+      // Avoid storing the password here
+    };
+
+    return res.redirect("/home"); // Redirect to the home page after successful login
   } catch (error) {
-    console.log(error.message);
+     res.render("login", { message: "An error occured during login" });
   }
 };
+
 
 const loadHome = async (req, res) => {
   try {
@@ -244,27 +339,20 @@ const loadForgotPassword = async (req, res) => {
 const forgotVerifyNumber = async (req, res) => {
   try {
     req.session.mobile = req.body.mobile;
-    const user = await User.findOne({ mobile: req.session.mobile })
+    const user = await User.findOne({ mobile: req.session.mobile });
     req.session.user = user;
     if (!user) {
-      res.render('forgotpassword', { message: "user not registered" })
+      res.render('forgotpassword', { message: "user not registered" });
     } else {
       const forgototp = Math.floor(100000 + Math.random() * 900000);
-      req.session.forgototp = forgototp
+      req.session.forgotOtp = forgototp;
       console.log(forgototp);
-
-      // Send the OTP to the user's mobile number
-      // await twilio.messages.create({
-      //   body: `Your OTP: ${otp}`,
-      //   from: '+15416553228',
-      //   to: `+91${user.mobile}`,
-      // })
-      res.redirect('forgotOtpVerify')
+      res.render('forgotOtpVerify');
     }
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
   }
-}
+};
 
 const loadOtpPage = async (req, res) => {
   try {
@@ -275,22 +363,36 @@ const loadOtpPage = async (req, res) => {
   }
 };
 
+const forgotResendOtp = async (req, res) => {
+  try {
+    const resendOtp = Math.floor(100000 + Math.random() * 900000);
+    console.log(resendOtp);
+    req.session.forgotOtp = resendOtp;
+    console.log("testing", req.session.forgotOtp);
+    res.render("forgotOtpVerify", { message: "OTP has been resent.", otp: req.session.forgotOtp });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+
 const forgotOtpverify = async (req, res) => {
+  console.log("test2", req.session.forgotOtp);
   try {
     const otp = req.body.otp;
-    console.log(otp)
-    if (otp == req.session.forgototp) {
-      //otp is correct,proceed with login
-      return res.render('resetpassword')
+    console.log(otp);
+    if (otp == req.session.forgotOtp) {
+      // OTP is correct, proceed with login
+      return res.render('resetpassword');
     } else {
-      //incorrect Otp
-      return res.render('forgotOtpVerify', { message: "incorrect otp" })
+      // Incorrect OTP
+      return res.render('forgotOtpVerify', { message: "Incorrect OTP" });
     }
   } catch (error) {
-      console.log(error.message)
-    }
-  
-}
+    console.log(error.message);
+  }
+};
+
   //reset password
 const loadrewritePassword = async (req, res)=>{
   try {
@@ -301,16 +403,103 @@ const loadrewritePassword = async (req, res)=>{
   
 }
 
-// const resetPassword = async (req, res) => {
+
+
+
+
+const showProduct = async (req, res) => {
+  try {
+    const products = await Product.find({});
+    // console.log(products);
+    res.render("showProduct", { products });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+// product detail
+
+const productdetail = async (req, res) => {
+  try {
+    // console.log(req.params);
+    const productId = req.params.id;
+    const product = await Product.findOne({ _id: productId });
+    // console.log(product);
+    const sizeInfo = await Quantity.findOne({ product: productId });
+    const sizes = sizeInfo ? sizeInfo.quantities.map((q)=> q.size): [];
+    res.render("productdetail", { product,sizes });
+  } catch (error) {
+    console.log(error);
+  }
+};
+//load user profile
+// const loadUserProfile = async (req, res) => {
 //   try {
-//     // Password reset logic
-//     // ...
-//     res.redirect('/login'); // Redirect to the login page after password reset
+//     if (!req.session.user) {
+//       return res.redirect("/login");
+//     }
+
+//     const user_id = req.session.user_id;
+
+//     const user = await User.findById(user_id);
+
+//     if (!user) {
+//       return res.redirect("/login");
+//     }
+
+//     res.redirect("profile", { user });
 //   } catch (error) {
 //     console.log(error.message);
-//     res.render('resetpassword', { message: 'Error occurred during password reset' });
 //   }
 // };
+
+// ...................
+// const loadUserProfile = async (req, res) => {
+//   try {
+//     if (!req.session.user) {
+//       return res.redirect("/login");
+
+//     }
+
+//     const user_id = req.session.user_id;
+//     const user = await User.findById(user_id);
+
+//     if (!user) {
+//       return res.redirect("/login");
+//     }
+
+//     res.render("profile", { user }); // Use res.render() to render the profile view with user data
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// };
+// const loadUserProfile = async (req, res) => {
+//   try {
+//     console.log("User ID from session:", req.session.user_id); // Add this line to check the value
+
+
+
+const loadUserProfile = async (req, res) => {
+  try {
+    // console.log("Session Data:", req.session);
+
+    if (!req.session.user) {
+      return res.redirect("/login");
+    }
+
+    const user_id = req.session.user_id;
+    const user = await User.findById(user_id);
+
+    if (!user) {
+      return res.redirect("/login");
+    }
+
+    res.render("profile", { user });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+
 const userLogout = async (req, res) => {
   try {
     req.session.destroy();
@@ -335,5 +524,9 @@ module.exports = {
   forgotVerifyNumber,
   forgotOtpverify,
   loadOtpPage,
-  loadrewritePassword
+  loadrewritePassword,
+  showProduct,
+  forgotResendOtp,
+  productdetail,
+  loadUserProfile
 };

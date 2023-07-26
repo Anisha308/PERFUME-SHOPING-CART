@@ -17,10 +17,22 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    Address:[ {
+        
+        District: String,
+        pincode:Number,
+        HouseName:String 
+        }
+        ],
+    
     is_blocked: {
         type: Number,
         required: true,
         default: false
+    },
+    is_otp_verified: {
+        type: Boolean,
+        default :0
     }
 
 }

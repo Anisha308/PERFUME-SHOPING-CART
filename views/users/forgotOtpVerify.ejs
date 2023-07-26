@@ -26,7 +26,7 @@
                 </form>
                 <div class="text-center mt-3">
                     <p id="timer" style="display: none;">Resend OTP in <span id="countdown">30</span> seconds</p>
-                    <a href="/resend" id="resendLink" style="display: none;"><button class="btn btn-dark btn-block"
+                    <a href="/forgotResend" id="resendLink" style="display: none;"><button class="btn btn-dark btn-block"
                             id="resendBtn">Resend OTP</button></a>
                 </div>
                 <%=(typeof message!=='undefined' )?message:""%>
@@ -43,7 +43,7 @@
         var resendLink = document.getElementById('resendLink');
         var timer = document.getElementById('timer');
         var resendBtn = document.getElementById('resendBtn');
-        var countdown = 30; // Set the initial countdown value
+        var countdown = 10; // Set the initial countdown value
 
         function startCountdown() {
             timer.style.display = 'block';
