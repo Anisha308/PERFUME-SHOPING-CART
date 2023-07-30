@@ -1,3 +1,48 @@
+<style>
+    
+    * {
+        box-sizing: border-box;
+        padding: 0;
+        margin: 0;
+        font-family: 'Open Sans', sans-serif; /* Use the 'Open Sans' font */
+    }
+
+    body {
+        font-size: 5px; /* Set the default font size for the body */
+        line-height: 1;
+    }
+
+  .right-corner-container {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+    /* Adjust font sizes for different elements */
+    .product-title {
+        font-size: 1rem;
+    }
+
+    .product-price {
+        font-size: 1rem;
+    }
+ .black-icon {
+      color: black;
+    }
+    .product-detail h2 {
+        font-size: 1rem;
+    }
+
+    .product-detail p {
+        font-size: 0rem;
+    }
+
+    /* Add more styles for other elements as needed */
+
+
+
+    /* The rest of your CSS styles here */
+</style>
+
 <%- include('../layouts/adminHeader.ejs') %>
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
@@ -52,94 +97,16 @@
 <section class="content-main p-5">
   <div class="content-header">
     <div>
-      <h2 class="content-title card-title">Product </h2>
-      <p>Add, edit or Change Status</p>
-    </div>
-    <div>
-      <input type="text" placeholder="Search Product" class="form-control bg-white">
+      <h2 class="content-title card-title" style="font-size: 25px;">Product Data</h2>
+      <p style="font-size: 14px;">Add, edit or Change Status</p>
     </div>
   </div>
 
-  <div class="row">
-    <div class="col-md-4">
-      <div class="p-5 shadow mb-5 bg-white rounded">
-        <form action="/addProduct" method="post" enctype="multipart/form-data">
-          <div class="row">
-            <div class="col-md-9">
-              <h6>1. General info</h6>
-            </div>
-            <div class="col-md-9">
-              <div class="mb-4">
-                <label class="form-label">Product title</label>
-                <input type="text" placeholder="Type here" class="form-control" name="name">
-              </div>
-              <div class="mb-4">
-                <label class="form-label">Description</label>
-                <textarea placeholder="Type here" class="form-control" rows="4" name="description"></textarea>
-              </div>
-              <div class="mb-4">
-                <label class="form-label">Category</label>
-                <select class="form-select" name="category">
-                  <% category.forEach(function(category) { %>
-                    <% if(category.isListed) { %>
-                      <option value="<%=category._id%>">
-                        <%= category.name %>
-                      </option>
-                      <% } %>
-                  <% }); %>
-                </select>
-              </div>
-             
-            </div>
-          </div>
-
-          <hr class="mb-4 mt-0">
-          <div class="row">
-            <div class="col-md-9">
-              <h6>2. Pricing</h6>
-            </div>
-            <div class="col-md-9">
-              <div class="mb-4">
-                <label class="form-label">Cost in INR</label>
-                <input type="text" placeholder="₹00.0" class="form-control" name="price">
-              </div>
-            </div>
-          </div>
-
-          <hr class="mb-4 mt-0">
-          <div class="row">
-            <div class="col-md-9">
-              <h6>3. Media</h6>
-            </div>
-            <div class="col-md-25">
-              <div class="mb-4">
-                <label class="form-label">Main Image</label>
-                <input class="form-control" multiple type="file" name="images">
-              </div>
-            </div>
-            <!-- <div class="col-md-25">
-              <div class="mb-4">
-                <label class="form-label">Second Image</label>
-                <input class="form-control" multiple type="file" name="images">
-              </div>
-            </div>
-            <div class="col-md-25">
-              <div class="mb-4">
-                <label class="form-label">Third Image</label>
-                <input class="form-control" multiple type="file" name="images">
-              </div>
-            </div>-->
-          </div>
-
-          <div class="d-grid">
-            <button class="btn btn-outline-danger">Create Product</button>
-            <p><%=(typeof message!=='undefined' )?message:""%></p>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <div class="col-md-8">
+<!-- Add Product button on the right corner -->
+<div class="right-corner-container">
+  <button class="btn btn-dark">Add Product</button>
+</div>
+    
       <div class="table-responsive p-5 shadow mb-5 bg-white rounded">
         <table class="table table-hover">
           <thead class="table-danger">
@@ -195,17 +162,30 @@
                   </p>
                 </div>
               </td>
+            <td class="text-center">
+  <a href="/editProductList?id=<%= item._id %>">
+    <button type="button" class="btn btn-success">Edit</button>
+  </a>
+</td>
               <td class="text-center">
-                <a href="/editProductList?id=<%= item._id %>">Edit</a>
-              </td>
-              <td class="text-center">
-                <a href="/deleteProduct?id=<%= item._id %>">Delete</a>
+                <a href="/deleteProduct?id=<%= item._id %>">
+                  <button type="button" class="btn btn-Danger">Delete</button>
               </td>
               <td class="text-center">
                 <% if (item.is_listed) { %>
-                  <a href="/changeProductstatus?id=<%= item._id %>">List</a>
+                  
+                  
+  <a href="/changeProductstatus?id=<%= item._id %>">
+    <i class="fa fa-eye black-icon" aria-hidden="true"></i>
+  </a>
+
+
                 <% } else { %>
-                  <a href="/changeProductstatus?id=<%= item._id %>">Unlist</a>
+               
+  <a href="/changeProductstatus?id=<%= item._id %>">
+    <img src="/images/eyeclose.png" alt="Eye Icon" class="eye-icon" style="height: font: 25px;; width: 25px;">
+  </a>
+
                 <% } %>
               </td>
             </tr>

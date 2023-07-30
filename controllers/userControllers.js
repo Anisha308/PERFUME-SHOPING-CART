@@ -39,7 +39,7 @@ const insertUser = async (req, res) => {
     }
 
 
-    const spassword = await securePassword(req.body.password);
+    const spassword = await securePassword(password);
     const addressData = {
       District,
       pincode,
@@ -423,7 +423,11 @@ const productdetail = async (req, res) => {
     // console.log(req.params);
     const productId = req.params.id;
     const product = await Product.findOne({ _id: productId });
-    // console.log(product);
+    if (!product) {
+      console.log("not found");
+    }
+    console.log(product);
+    
     const sizeInfo = await Quantity.findOne({ product: productId });
     const sizes = sizeInfo ? sizeInfo.quantities.map((q)=> q.size): [];
     res.render("productdetail", { product,sizes });

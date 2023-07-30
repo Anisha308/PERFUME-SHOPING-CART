@@ -104,18 +104,18 @@ const updateProductList = async (req, res) => {
     const price = req.body.price;
     const category = req.body.category;
     const status = req.body.status === "listed";
-console.log("test");
+
 
     const filesArray = Object.values(req.files).flat();
     const images = filesArray.map((file) => file.filename);
 
     // Find the existing product data
     const productData = await Product.findById(id);
-    console.log(productData);
+    
 
     // Check if new images are provided
     const updatedImages = images.length > 0 ? images : productData.images;
-    console.log(updatedImages);
+    
 
     const update = await Product.updateOne(
       { _id: id },
