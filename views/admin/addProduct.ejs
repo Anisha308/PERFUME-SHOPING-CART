@@ -1,91 +1,92 @@
 <%- include('../layouts/adminHeader.ejs') %>
-<div class="p-5 shadow mb-5 bg-white rounded " style="width: 100%;">
-        <form action="/addProduct" method="post" enctype="multipart/form-data">
-          <div class="row">
-            <div class="col-md-9">
-              <div class="mb-4">
-                <label class="form-label" style="font-size: 14px;">Product details:</label>
-                <input type="text" placeholder="Product title" class="form-control" name="name" style="font-size: 12px;">
-              </div>
-              <div class="mb-4">
-                <textarea placeholder="Description" class="form-control" rows="4" name="description" style="font-size: 12px;"></textarea>
-              </div>
-              <div class="mb-4">
-                <label class="form-label" style="font-size: 14px;">Category</label>
-                <select class="form-select" name="category" style="font-size: 12px;">
-                  <% category.forEach(function(category) { %>
-                    <% if(category.isListed) { %>
-                      <option value="<%=category._id%>">
-                        <%= category.name %>
-                      </option>
-                      <% } %>
-                  <% }); %>
-                </select>
-              </div>
-            </div>
-          </div>
-
-       
-          <div class="row">
-            <div class="col-md-9">
-            </div>
-            <div class="col-md-9">
-              <div class="mb-4">
-                <label class="form-label" style="font-size: 14px;">Cost in INR</label>
-                <input type="text" placeholder="₹00.0" class="form-control" name="price">
-              </div>
-            </div>
-          </div>
-
-          
-          <div class="row">
-            <div class="col-md-9">
-              <h6> Media</h6>
-            </div>
-            <div class="col-md-25">
-              <div class="mb-4">
-                
-                <input class="form-control" multiple type="file" name="images">
-              </div>
-            </div>
-            <div class="col-md-25">
-              <div class="mb-4">
-                
-                <input class="form-control" multiple type="file" name="images">
-              </div>
-            </div>
-            <div class="col-md-25">
-              <div class="mb-4">
-                
-                <input class="form-control" multiple type="file" name="images">
-              </div>
-            </div>
-          </div>
-         <div class="col-md-25">
-    <div class="mb-4">
-       
-        <div class="input-group">
-            <input class="form-control" multiple type="file" name="images">
-            
-            
+<div class="p-5 shadow mb-5 bg-white rounded" style="width: 100%">
+  <form action="/addProduct" method="post" enctype="multipart/form-data">
+    <div class="row">
+      <div class="col-md-9">
+        <div class="mb-4">
+          <label class="form-label" style="font-size: 14px"
+            >Product details:</label
+          >
+          <input
+            type="text"
+            placeholder="Product title"
+            class="form-control"
+            name="name"
+            style="font-size: 12px"
+          />
         </div>
-    </div>
-      <div class="mb-4">
-        
-        <div class="input-group">
-            <input class="form-control" multiple type="file" name="images">
-            
-            
+        <div class="mb-4">
+          <textarea
+            placeholder="Description"
+            class="form-control"
+            rows="4"
+            name="description"
+            style="font-size: 12px"
+          ></textarea>
         </div>
-    </div>
-</div>
-
-          
-
-          <div class="d-grid">
-            <button class="btn btn-outline-danger">Create Product</button>
-            <p><%=(typeof message!=='undefined' )?message:""%></p>
-          </div>
-        </form>
+        <div class="mb-4">
+          <label class="form-label" style="font-size: 14px">Category</label>
+          <select class="form-select" name="category" style="font-size: 12px">
+            <% category.forEach((category) => { %> <% if (category.isListed) {
+            %>
+            <option value="<%= category._id %>"><%= category.name %></option>
+            <% } %> <% }); %>
+          </select>
+        </div>
       </div>
     </div>
+
+    <div class="row">
+      <div class="col-md-9"></div>
+      <div class="col-md-9">
+        <div class="mb-4">
+          <label class="form-label" style="font-size: 14px">Cost in INR</label>
+          <input
+            type="text"
+            placeholder="₹00.0"
+            class="form-control"
+            name="price"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-9">
+        <h6>Media</h6>
+      </div>
+      <div class="col-md-25">
+        <div class="mb-4">
+          <input class="form-control" multiple type="file" name="images" />
+        </div>
+      </div>
+      <div class="col-md-25">
+        <div class="mb-4">
+          <input class="form-control" multiple type="file" name="images" />
+        </div>
+      </div>
+      <div class="col-md-25">
+        <div class="mb-4">
+          <input class="form-control" multiple type="file" name="images" />
+        </div>
+      </div>
+    </div>
+    <div class="col-md-25">
+      <div class="mb-4">
+        <div class="input-group">
+          <input class="form-control" multiple type="file" name="images" />
+        </div>
+      </div>
+      <div class="mb-4">
+        <div class="input-group">
+          <input class="form-control" multiple type="file" name="images" />
+        </div>
+      </div>
+    </div>
+
+    <div class="d-grid">
+      <button class="btn btn-outline-danger">Create Product</button>
+      <p><%=(typeof message!=='undefined' )?message:""%></p>
+    </div>
+  </form>
+</div>

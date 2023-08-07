@@ -2,6 +2,7 @@ const multer = require("multer");
 const path = require("path");
 const Product = require("../models/productmodel");
 const Category = require("../models/categorymodel");
+const { findById } = require("../models/adminmodel");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -41,6 +42,16 @@ const loadProductList = async (req, res) => {
   }
 };
 
+//to render add product page
+const showAddProduct = async (req, res) => {
+  try {
+    const categories = await Category.find({ isListed: true })
+    
+    res.render('addProduct', { category: categories })
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 const createProduct = async (req, res) => {
   try {
     upload(req, res, async (err) => {
@@ -94,7 +105,7 @@ const editProductList = async (req, res) => {
   }
 };
 
-///update product list
+//edit product list
 
 const updateProductList = async (req, res) => {
   try {
@@ -135,7 +146,7 @@ const updateProductList = async (req, res) => {
     console.log(error.message);
   }
 };
-
+//list nd unlist
 const changeStatus = async (req, res) => {
   try {
     const product_id = req.query.id;
@@ -174,4 +185,5 @@ module.exports = {
   updateProductList,
   deleteProduct,
   changeStatus,
+  showAddProduct,
 };

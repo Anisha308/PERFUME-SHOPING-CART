@@ -1,3 +1,4 @@
+
 const express = require("express");
 const admin_route = express();
 const session = require("express-session");
@@ -36,7 +37,9 @@ admin_route.use(express.urlencoded({ extended: true }));
 const adminControllers = require("../controllers/adminControllers");
 const productController = require("../controllers/productController");
 const categoryController = require("../controllers/categoryControllers");
-const quantityController=require('../controllers/quantityControllers')
+const quantityController = require('../controllers/quantityControllers')
+const orderController = require('../controllers/orderController')
+const addressController = require('../controllers/addressController')
 admin_route.use(
   session({
     secret: config.sessionSecret,
@@ -44,6 +47,7 @@ admin_route.use(
     resave: false,
   })
 );
+
 
 admin_route.get(
   "/adminlogin",
@@ -77,6 +81,7 @@ admin_route.get("/changestatus", categoryController.changeStatus);
 //productlist
 
 admin_route.get("/productList", productController.loadProductList);
+admin_route.get("/addProduct",productController.showAddProduct)
 admin_route.post("/addProduct", productController.createProduct);
 admin_route.get("/changeProductstatus", productController.changeStatus);
 
@@ -94,5 +99,12 @@ admin_route.post(
 admin_route.get("/addquantity", quantityController.displayAddQuantity);
 admin_route.post('/addquantity',quantityController.addQuantity)
 
-admin_route.get('/showquantity',quantityController.showQuantity)
+admin_route.get('/showquantity', quantityController.showQuantity)
+
+admin_route.get('/displayOrder',orderController.order_status)
+admin_route.post("/orderUpdate/:id", orderController.orderUpdate);
+admin_route.post('/cancelOrder/:id',orderController.cancelUserOrder);
+
+// admin_route.post("/edit-address/:id", addressController.editProfileAddress);
+
 module.exports = admin_route;

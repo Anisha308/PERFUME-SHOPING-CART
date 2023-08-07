@@ -1,0 +1,359 @@
+<%- include('../layouts/userHeader.ejs') %>
+<div class="container">
+  <div class="row">
+    <!-- Saved Address section -->
+    <div class="col-md-6 mb-4">
+      <div class="mt-5">
+        <h4 class="mb-3">Saved Address</h4>
+        <ul class="list-group mb-3">
+          <% addressItem[0].deliveryAddress.forEach((deliveryItem) => { %>
+
+          <li
+            class="list-group-item d-flex justify-content-between lh-condensed"
+          >
+            <div class="w-100">
+              <div class="form-check">
+                <label class="form-check-label" for="<%= deliveryItem.name %>">
+                  <%= deliveryItem.name %>
+                </label>
+              </div>
+              <address>
+                <%= deliveryItem.address %> <%= deliveryItem.district %> <%=
+                deliveryItem.state %> <%= deliveryItem.pincode %>
+              </address>
+            </div>
+
+            <span class="text-muted">
+              <%= deliveryItem.mobile ? deliveryItem.mobile : "" %> <%=
+              deliveryItem.email ? "(" + deliveryItem.email + ")" : "" %>
+
+            <a href="#" data-toggle="modal" data-target="#editModal<%= deliveryItem._id %>">
+                <i class="fa fa-pencil" aria-hidden="true"></i>
+              </a>  
+
+      <a href="/delete?id=<%= deliveryItem._id %>"  onclick="deleteAddress('<%= deliveryItem._id %>')">
+  <i class="fa fa-trash" aria-hidden="true"></i>
+</a>
+            <!-- Update the edit link for each address -->
+
+  
+              
+            </span>
+          </li>
+
+                  <!-- Edit Address Modal -->
+  <div class="modal fade" id="editModal<%= deliveryItem._id %>" tabindex="-1" role="dialog" aria-labelledby="editModalLabel<%= deliveryItem._id %>" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title" id="editModalLabel<%= deliveryItem._id %>">Edit Address</h4>
+        </div>
+        <div class="modal-body">
+          <form action="/edit-address?id=<%= deliveryItem._id %>" method="POST">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="editName">Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editName"
+                  name="editName"
+                  placeholder="<%= deliveryItem.name %>"
+                  value="<%= deliveryItem.name %>"
+                  required
+                />
+                <div class="invalid-feedback">
+                  Please provide a valid name.
+                </div>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="editMobile">Mobile</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="editMobile"
+                  name="editMobile"
+                  placeholder="<%= deliveryItem.mobile %>"
+                  value="<%= deliveryItem.mobile %>"
+                  required
+                />
+                <div class="invalid-feedback">
+                  Please provide a valid mobile number.
+                </div>
+              </div>
+            </div>
+
+            <!-- Similar fields for email, address, pincode, district, state, country -->
+<div class="mb-3">
+                  <label for="email"
+                    >Email <span class="text-muted">(Optional)</span></label
+                  >
+                  <input
+                    type="email"
+                    class="form-control"
+                    name="email"
+                    placeholder="<%= deliveryItem.email %>"
+value="<%= deliveryItem.email %>"
+                  />
+                  <div class="invalid-feedback">
+                    Please enter a valid email address for shipping updates.
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="address">Address</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="address"
+                    placeholder="<%= deliveryItem.address %>"
+                    
+                    required
+
+                    value="<%= deliveryItem.address %>"
+                  />
+                  <div class="invalid-feedback">
+                    Please enter your shipping address.
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="mb-3 col">
+                    <label for="pincode"
+                      >Pincode<span class="text-muted"></span
+                    ></label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="pincode"
+                      placeholder="<%= deliveryItem.pincode %>"
+                      value="<%= deliveryItem.pincode %>"
+                    />
+                  </div>
+                  <div class="mb-3 col">
+                    <label for="district"
+                      >District<span class="text-muted"></span
+                    ></label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="district"
+                      placeholder="<%= deliveryItem.district %>"
+                      value="<%= deliveryItem.district %>"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col mb-3">
+                    <label for="state">State</label>
+                    <select
+                      class="custom-select d-block w-100"
+                      name="state"
+                      required
+                       placeholder="<%= deliveryItem.state %>"
+                    >
+                      <option value="">Choose...</option>
+                      <option>Kerala</option>
+                    </select>
+                  </div>
+                  <div class="col mb-3">
+                    <label for="country">Country</label>
+                    <select
+                      class="custom-select d-block w-100"
+                      name="country"
+                      required
+                      placeholder="<%= deliveryItem.country %>"
+                    >
+                      <option value="">Choose...</option>
+                      <option>India</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+          
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<% }) %>
+              
+        </ul>
+      </div>
+    </div>
+
+  
+      
+
+    <div class="container">
+      <button
+        class="btn btn-dark"
+        data-toggle="modal"
+        data-target="#exampleModal"
+      >
+        Add address
+      </button>
+      <!-- The Modal -->
+      <form action="/addProfileaddress" method="POST">
+        <div
+          class="modal fade"
+          id="exampleModal"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="mb-3">Your address</h4>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="name">Name</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="name"
+                      name="name"
+                      placeholder=""
+                      value=""
+                      required
+                    />
+                    <div class="invalid-feedback">
+                      Please provide a valid name.
+                    </div>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="mobile">Mobile</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="mobile"
+                      name="mobile"
+                      placeholder=""
+                      value=""
+                      required
+                    />
+                    <div class="invalid-feedback">
+                      Please provide a valid mobile number.
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="email"
+                    >Email <span class="text-muted">(Optional)</span></label
+                  >
+                  <input
+                    type="email"
+                    class="form-control"
+                    name="email"
+                    placeholder="you@example.com"
+                  />
+                  <div class="invalid-feedback">
+                    Please enter a valid email address for shipping updates.
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <label for="address">Address</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="address"
+                    placeholder="1234 Main St"
+                    required
+                  />
+                  <div class="invalid-feedback">
+                    Please enter your shipping address.
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="mb-3 col">
+                    <label for="pincode"
+                      >Pincode<span class="text-muted"></span
+                    ></label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="pincode"
+                      placeholder="Apartment or suite"
+                    />
+                  </div>
+                  <div class="mb-3 col">
+                    <label for="district"
+                      >District<span class="text-muted"></span
+                    ></label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="district"
+                      placeholder="Apartment or suite"
+                    />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col mb-3">
+                    <label for="state">State</label>
+                    <select
+                      class="custom-select d-block w-100"
+                      name="state"
+                      required
+                    >
+                      <option value="">Choose...</option>
+                      <option>Kerala</option>
+                    </select>
+                  </div>
+                  <div class="col mb-3">
+                    <label for="country">Country</label>
+                    <select
+                      class="custom-select d-block w-100"
+                      name="country"
+                      required
+                    >
+                      <option value="">Choose...</option>
+                      <option>India</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  Save changes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+  function deleteAddress(addressId) {
+    axios.delete(`/delete/${addressId}`)
+      .then(response => {
+        // Handle success, e.g., show a success message or refresh the page
+      })
+      .catch(error => {
+        // Handle error, e.g., show an error message
+      });
+  }
+</script>
+
+

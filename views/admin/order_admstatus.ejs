@@ -1,0 +1,205 @@
+<%- include('../layouts/adminHeader.ejs') %>
+
+<link
+  href="https://demo.dashboardpack.com/architectui-html-free/main.css"
+  rel="stylesheet"
+/>
+
+<style>
+  .increased-width {
+    width: 120%;
+  }
+
+  /* Styling for different order statuses */
+  .status-pending {
+    font-size: 14px;
+    color: orange;
+  }
+
+  .status-completed {
+    font-size: 14px;
+    color: green;
+  }
+
+  .status-in-progress {
+    font-size: 14px;
+    color: red;
+  }
+
+  /* Adjust SL.NO column width */
+  .slno-column {
+    width: 30px; /* Set the desired width */
+  }
+</style>
+
+<body>
+  <div class="app-main">
+    <div class="app-main__outer">
+      <div class="app-main__inner">
+        <div class="app-page-title"></div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="main-card mb-3 card">
+              <div class="card-header">ORDER STATUS</div>
+              <div class="table-responsive">
+                <table
+                  class="align-middle mb-0 table table-borderless table-striped table-hover increased-width"
+                >
+                  <thead>
+                    <tr>
+                      <th class="text-center slno-column">SL.NO</th>
+                      <th>Order ID</th>
+                      <th class="text-center">User</th>
+                      <th class="text-center">Products</th>
+                      <th class="text-center">Payment</th>
+                      <th class="text-center">Total</th>
+                      <th class="text-center">Status</th>
+                      <th class="text-center">Date</th>
+                      <th class="text-center">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% for (let i = 0; i < order_data.length; i++) { %>
+                    <tr>
+                      <td class="text-center text-muted"><%= i + 1 %></td>
+                      <td><%= order_data[i]._id %></td>
+                      <td class="text-center">
+                        <%= order_data[i].address.name %>,<br>
+                         <%= order_data[i].address.address %>,
+                         <%= order_data[i].address.district %>,<br>
+                          <%= order_data[i].address.state %>,
+                          <%= order_data[i].address.country %>,
+                           <%= order_data[i].address.pincode %>
+                      </td>
+                      <td class="text-center">
+                        <% for (let j = 0; j < order_data[i].items.length; j++)
+                        { %> <%= order_data[i].items[j].product.name %> x <%=
+                        order_data[i].items[j].quantity %><br />
+                        <% } %>
+                      </td>
+                      <td class="text-center">
+                        <%= order_data[i].payment_method %>
+                      </td>
+                      <td class="text-center"><%= order_data[i].total %></td>
+                      <td>
+  <select class="status-changing" data-order-id="<%= order_data[i]._id %>" name="status">
+    <option value="Pending" <% if (order_data[i].status === 'Pending') { %>selected<% } %>>Pending</option>
+    <option value="Shipped" <% if (order_data[i].status === 'Shipped') { %>selected<% } %>>Shipped</option>
+    <option value="Delivered" <% if (order_data[i].status === 'Delivered') { %>selected<% } %>>Delivered</option>
+    <option value="Cancelled" <% if (order_data[i].status === 'Cancelled') { %>selected<% } %>>Cancelled</option>
+  </select>
+</td>
+
+
+
+                      <td class="text-center">
+                        <%= new
+                        Date(order_data[i].createdAt).toLocaleDateString('en-US',
+                        { weekday: 'short', year: 'numeric', month: 'short',
+                        day: 'numeric' }) %>
+                      </td>
+                      <!-- <td class="order-status" data-order-id="<%= order_data[i]._id %>"><%= order_data[i].status %></td> -->
+                      <td style=" text-align: center;">
+                        <% if(order_data[i].status ==="Cancelled"){ %>
+                        
+                        <h6>Cancelled</h6>  
+                        
+                        <% }else{%>
+                          <button
+                          class="cancel-button"
+                          data-order-id="<%= order_data[i]._id %>"
+                        >
+                          Cancel Order
+                        </button>
+                        <%}%> 
+                      </td>
+                    </tr>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
+  <script
+    type="text/javascript"
+    src="https://demo.dashboardpack.com/architectui-html-free/assets/scripts/main.js"
+  ></script>
+
+<script>
+  $(document).ready(function () {
+  $(".cancel-button").click(function () {
+    const orderId = $(this).data("order-id");
+    const cancelButton = $(this); // Reference to the cancel button
+
+    $.ajax({
+      type: "POST",
+      url: `/cancelOrder/${orderId}`,
+      success: function (data) {
+        if (data.success) {
+          alert(data.message);
+          cancelButton.text("Cancelled");
+          cancelButton.prop("disabled", true);
+          // Update the entire row's status cell if needed
+          // const statusCell = cancelButton.closest("tr").find(".status-cell");
+          // statusCell.text("Cancelled");
+        } else {
+          alert(data.error);
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error(error);
+        alert("An error occurred while cancelling the order.");
+      },
+    });
+  });
+
+  </script>
+
+  <script>
+  
+  $(document).ready(function () {
+  $(".cancel-button").click(function () {
+    // ... Existing cancel button click handler ...
+  });
+
+  // Event delegation for status change
+  $("table").on("change", ".status-changing", function () {
+    const orderId = $(this).data("order-id");
+    const newStatus = $(this).val();
+    const updateSelect = $(this);
+
+    console.log(orderId, "orderId"); // Verify orderId in the console
+console.log(newStatus, "newStatus");
+    $.ajax({
+      type: "POST",
+      url: `/orderUpdate/${orderId}`,
+      data: { status: newStatus },
+      success: function (data) {
+        if (data.success) {
+          alert(data.message);
+          // Optionally update the UI based on the response
+          // For example, updateSelect.css("color", "green");
+        } else {
+          alert(data.error);
+        }
+      },
+      error: function (xhr, status, error) {
+        console.error(error);
+        alert("An error occurred while updating the order status.");
+      },
+    });
+  });
+});
+
+
+</script>
+
+<%- include('../layouts/adminFooter.ejs') %>

@@ -1,0 +1,218 @@
+<%- include('../layouts/userHeader.ejs') %>
+
+<link
+  href="https://demo.dashboardpack.com/architectui-html-free/main.css"
+  rel="stylesheet"
+/>
+
+<style>
+  .increased-width {
+    width: 100%;
+  }
+  .app-main__inner {
+    max-width: 100%; /* Adjust the maximum width as needed */
+    margin: 0 auto; /* Center the content horizontally */
+  }
+
+  /* Styling for different order statuses */
+  .status-pending {
+    font-size: 14px;
+    color: orange;
+  }
+
+  .status-completed {
+    font-size: 14px;
+    color: green;
+  }
+
+  .status-in-progress {
+    font-size: 14px;
+    color: red;
+  }
+
+  /* Adjust SL.NO column width */
+  .slno-column {
+    width: 30px; /* Set the desired width */
+  }
+  .app-page-title,
+  .card-header {
+    background-color: #ddcecf; /* Creamy color */
+  }
+  /* Additional styles for the table and buttons */
+  .table {
+    border-collapse: separate;
+    border-spacing: 0 10px; /* Add spacing between rows */
+  }
+
+  .table th,
+  .table td {
+    padding: 10px;
+  }
+
+  .cancel-button {
+    background-color: black;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .cancel-button:hover {
+    background-color: black;
+  }
+
+  /* Update the status cell styles */
+  .status-cell {
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  /* Apply styles to the table header */
+  .table thead th {
+    background-color: #f7f7f7;
+  }
+
+  /* Apply hover effect to rows */
+  .table tbody tr:hover {
+    background-color: #f5f5f5;
+  }
+</style>
+
+<body>
+  
+    <div class="app-main__outer">
+      <div class="app-main__inner">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="main-card mb-3 card">
+              <div class="card-header">ORDER STATUS</div>
+              <div class="table-responsive">
+                <table
+                  class="align-middle mb-0 table table-borderless table-striped table-hover increased-width"
+                >
+                  <thead>
+                    <tr>
+                      <th class="text-center slno-column">SL.NO</th>
+                      <th>Order ID</th>
+                      <th class="text-center">User</th>
+                      <th class="text-center">Products</th>
+                      <th class="text-center">Payment</th>
+                      <th class="text-center">Total</th>
+                      <th class="text-center">Status</th>
+                      <th class="text-center">Date</th>
+                      <th class="text-center">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% for (let i = 0; i < order_data.length; i++) { %>
+                    <tr>
+                      <td class="text-center text-muted"><%= i + 1 %></td>
+                      <td><%= order_data[i]._id %></td>
+                      <td class="text-center">
+                        <%= order_data[i].address.name %>,<br>
+                        <%= order_data[i].address.address %>,
+                         <%= order_data[i].address.district %>,<br>
+                          <%= order_data[i].address.state %>,
+                          <%= order_data[i].address.country %>,
+                           <%= order_data[i].address.pincode %>
+                      </td>
+                      <td class="text-center">
+                        <% for (let j = 0; j < order_data[i].items.length; j++)
+                        { %> <%= order_data[i].items[j].product.name %> x <%=
+                        order_data[i].items[j].quantity %><br />
+                        <% } %>
+                      </td>
+                      <td class="text-center">
+                        <%= order_data[i].payment_method %>
+                      </td>
+                      <td class="text-center"><%= order_data[i].total %></td>
+                      <td>
+                        <form
+                          action="/orderUpdate/<%= order_data._id %>"
+                          method="post"
+                        >
+                          <select name="status">
+                            <option value="Pending" <% if (order_data.status ===
+                            'Pending') { %>selected<% } %>>Pending <option
+                            value="Shipped" <% if (order_data.status ===
+                            'Shipped') { %>selected<% } %>>Shipped <option
+                            value="Delivered" <% if (order_data.status ===
+                            'delivered') { %>selected<% } %>>Delivered
+                          </select>
+                        </form>
+                      </td>
+                      <td class="text-center">
+                        <%= new
+                        Date(order_data[i].createdAt).toLocaleDateString('en-US',
+                        { weekday: 'short', year: 'numeric', month: 'short',
+                        day: 'numeric' }) %>
+                      </td>
+                      <!-- <td class="order-status" data-order-id="<%= order_data[i]._id %>"><%= order_data[i].status %></td> -->
+                      <td style=" text-align: center;">
+                        <% if(order_data[i].status ==="Cancelled"){ %>
+                        
+                        <h6>Cancelled</h6>  
+                        
+                        <% }else{%>
+                          <button
+                          class="cancel-button"
+                          data-order-id="<%= order_data[i]._id %>"
+                        >
+                          Cancel Order
+                        </button>
+                        <%}%> 
+                      </td>
+                    </tr>
+                    <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="http://maps.google.com/maps/api/js?sensor=true"></script>
+  <script
+    type="text/javascript"
+    src="https://demo.dashboardpack.com/architectui-html-free/assets/scripts/main.js"
+  ></script>
+
+  <script>
+    $(document).ready(function () {
+      $(".cancel-button").click(function () {
+        const orderId = $(this).data("order-id");
+        const statusCell = $(`.order-status[data-order-id="${orderId}"]`);
+        const cancelButton = $(this); // Reference to the cancel button
+
+        $.ajax({
+          type: "POST", // Or "GET" depending on your backend configuration
+          url: `/cancelOrder/${orderId}`, // Replace with your actual backend endpoint
+          success: function (data) {
+            if (data.success) {
+              alert(data.message);
+              window.location.reload()
+              // cancelButton.text("Cancelled"); // Update the button text
+              // cancelButton.removeClass("cancel-button"); // Remove the button class
+              // cancelButton.prop("disabled", true); // Disable the button
+              // statusCell.text("Cancelled"); // Update the status cell content
+            } else {
+              alert(data.error);
+            }
+          },
+          error: function (xhr, status, error) {
+            console.error(error);
+            alert("An error occurred while cancelling the order.");
+          },
+        });
+      });
+    });
+  </script>
+
+  <%- include('../layouts/userFooter.ejs') %>
+</body>

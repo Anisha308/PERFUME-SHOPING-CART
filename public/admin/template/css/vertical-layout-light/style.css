@@ -10140,7 +10140,7 @@ pre code {
 
 .table th,
 .table td {
-  padding: 1.25rem 0.9375rem;
+  padding: 3.5500000000000114rem;
   vertical-align: top;
   border-top: 1px solid #f3f3f3;
   width:100%;
@@ -10700,7 +10700,7 @@ textarea.tt-hint {
   display: inline-flex;
   align-items: center;
   padding-left: 0
-  margin-right :0.75rem;
+ 
 }
 
 .form-check-inline .form-check-input {

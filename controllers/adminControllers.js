@@ -1,6 +1,6 @@
 const admin = require('../models/adminmodel');
 const User = require('../models/usermodel');
-
+const Order=require('../models/ordermodel')
 const bcrypt = require('bcrypt');
 
 //load login page 
@@ -49,12 +49,22 @@ const verifyadminLogin = async (req, res) => {
 }
 
 const loadHome = async (req, res) => {
-    try {
-        res.render('adminhome')
-    } catch (error) {
-        console.log(error.message)
+  try {
+    // Assuming you have some logic to check if the user is authenticated
+    const isAuthenticated = true; // Modify this logic based on your authentication mechanism
+
+    if (isAuthenticated) {
+      // If the user is authenticated, fetch the user data and render the 'adminhome' page
+      const users = await User.find(); // Modify this query based on your database schema
+      res.render("adminhome", { user: users });
+    } else {
+      // If the user is not authenticated, redirect to the 'adminlogin' page
+      res.redirect("/adminlogin");
     }
-}
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
 const loadUser = async (req, res) => {
     try {
@@ -113,14 +123,19 @@ const unBlockUser = async (req, res) => {
 };
 
 
-module.exports = {
-    loadlogin,
-    verifyadminLogin,
-    loadDashboard,
-    loadHome,
-    loadUser,
-    adminlogout,
-    blockUser,
-    unBlockUser
 
-}
+
+
+
+
+module.exports = {
+  loadlogin,
+  verifyadminLogin,
+  loadDashboard,
+  loadHome,
+  loadUser,
+  adminlogout,
+  blockUser,
+  unBlockUser,
+  
+};

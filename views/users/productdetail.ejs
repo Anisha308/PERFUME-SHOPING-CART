@@ -1,186 +1,250 @@
 <%- include('../layouts/userHeader.ejs') %>
 
-
 <style>
+  .text-bold {
+    font-weight: 800;
+  }
 
-.text-bold {
-            font-weight: 800;
-        }
+  .text-color {
+    color: #0093c4;
+  }
 
-        text-color {
-            color: #0093c4;
-        }
+  /* Main image - left */
+  .main-img img {
+    width: 100%;
+  }
 
-        /* Main image - left */
-        .main-img img {
-            width: 100%;
-        }
+  /* Preview images */
+  .previews img {
+    width: 100%;
+    height: 140px;
+  }
 
-        /* Preview images */
-        .previews img {
-            width: 100%;
-            height: 140px;
-        }
+  .main-description .category {
+    text-transform: uppercase;
+    color: #0093c4;
+  }
 
-        .main-description .category {
-            text-transform: uppercase;
-            color: #0093c4;
-        }
+  .main-description .product-title {
+    font-size: 2.5rem;
+  }
 
-        .main-description .product-title {
-            font-size: 2.5rem;
-        }
+  .old-price-discount {
+    font-weight: 600;
+  }
 
-        .old-price-discount {
-            font-weight: 600;
-        }
+  .new-price {
+    font-size: 2rem;
+  }
 
-        .new-price {
-            font-size: 2rem;
-        }
+  .details-title {
+    text-transform: uppercase;
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: #757575;
+  }
 
-        .details-title {
-            text-transform: uppercase;
-            font-weight: 600;
-            font-size: 1.2rem;
-            color: #757575;
-        }
+  .buttons .block {
+    margin-right: 5px;
+  }
 
-        .buttons .block {
-            margin-right: 5px;
-        }
+  .quantity input {
+    border-radius: 0;
+    height: 40px;
+  }
 
-        .quantity input {
-            border-radius: 0;
-            height: 40px;
+  .custom-btn {
+    text-transform: capitalize;
+    background-color: #0093c4;
+    color: white;
+    width: 150px;
+    height: 40px;
+    border-radius: 0;
+  }
 
-        }
+  .custom-btn:hover {
+    background-color: #0093c4 !important;
+    font-size: 18px;
+    color: white !important;
+  }
 
+  .similar-product img {
+    height: 400px;
+  }
 
-        .custom-btn {
-            text-transform: capitalize;
-            background-color: #0093c4;
-            color: white;
-            width: 150px;
-            height: 40px;
-            border-radius: 0;
-        }
+  .similar-product {
+    text-align: left;
+  }
 
-        .custom-btn:hover {
-            background-color: #0093c4 !important;
-            font-size: 18px;
-            color: white !important;
-        }
+  .similar-product .title {
+    margin: 17px 0px 4px 0px;
+  }
 
-        .similar-product img {
-            height: 400px;
-        }
+  .similar-product .price {
+    font-weight: bold;
+  }
 
-        .similar-product {
-            text-align: left;
-        }
+  .questions .icon i {
+    font-size: 2rem;
+  }
 
-        .similar-product .title {
-            margin: 17px 0px 4px 0px;
-        }
+  .questions-icon {
+    font-size: 2rem;
+    color: #0093c4;
+  }
 
-        .similar-product .price {
-            font-weight: bold;
-        }
-
-        .questions .icon i {
-            font-size: 2rem;
-        }
-
-        .questions-icon {
-            font-size: 2rem;
-            color: #0093c4;
-        }
-
-
-        /* Small devices (landscape phones, less than 768px) */
-        @media (max-width: 767.98px) {
-
-            /* Make preview images responsive  */
-            .previews img {
-                width: 100%;
-                height: auto;
-            }
-
-        }
-
+  /* Small devices (landscape phones, less than 768px) */
+  @media (max-width: 767.98px) {
+    /* Make preview images responsive  */
+    .previews img {
+      width: 100%;
+      height: auto;
+    }
+  }
 </style>
 
 <body>
-
-    <div class="container my-5">
-        <div class="row">
-            <div class="col-md-5">
-                <div class="main-img">
-                    <img class="img-fluid" src="/uploads/<%= product?.images[0] %>" alt="ProductS"> 
-                    <div class="row my-3 previews">
-                        <div class="col-md-3">
-                            <img class="w-100" src="/uploads/<%= product?.images[1] %>" alt="Sale">
-                        </div>
-                        <div class="col-md-3">
-                            <img class="w-100" src="/uploads/<%= product?.images[2] %>" alt="Sale">
-                        </div>
-                        <div class="col-md-3">
-                            <img class="w-100" src="/uploads/<%= product?.images[3] %>" alt="Sale">
-                        </div>
-                        <div class="col-md-3">
-                            <img class="w-100" src="/uploads/<%= product?.images[4] %>" alt="Sale">
-                        </div>
-                    </div>
-                </div>
+  <div class="container my-5">
+    <div class="row">
+      <div class="col-md-5">
+        <div class="main-img">
+          <img
+            class="img-fluid"
+            src="/uploads/<%= product?.images[0] %>"
+            alt="ProductS"
+          />
+          <div class="row my-3 previews">
+            <div class="col-md-3">
+              <img
+                class="w-100"
+                src="/uploads/<%= product?.images[1] %>"
+                alt="Sale"
+              />
             </div>
-            <div class="col-md-7">
-                <div class="main-description px-2">
-                    
-                    <div class="product-title text-bold my-3">
-                           <%= product.name %>
-                    </div>
-
-
-                    <div class="product-info">
-                                </a>
-                                    <h6>
-                                     
-                                    </h6>
-                                    <p>&#8377; <%= product.price %></p>
-                                   <a href="#" class="btn btn-dark">ADD TO CART</a>
-                                </div>
-
-
-                
-
-
-                </div>
-
-                <div class="product-details my-4">
-                    <p class="details-title text-color mb-1">Product Details</p>
-                    <p class="description"><%= product.description %> </p>
-                </div>
-        <a href="#">
-  <span class="bi bi-check2-circle"></span>
-</a>
-<ul>
-  <% if (sizes && sizes.length > 0) { %>
-  <h3>
-    <span class="bi bi-list"></span> Sizes
-  </h3>
-  <ul>
-    <% sizes.forEach(size => { %>
-    <li><%= size %></li>
-    <% }); %>
-  </ul>
-  <% } else { %>
-  <p>No sizes available for this product</p>
-  <% } %>
-</ul>
+            <div class="col-md-3">
+              <img
+                class="w-100"
+                src="/uploads/<%= product?.images[2] %>"
+                alt="Sale"
+              />
+            </div>
+            <div class="col-md-3">
+              <img
+                class="w-100"
+                src="/uploads/<%= product?.images[3] %>"
+                alt="Sale"
+              />
+            </div>
+            <div class="col-md-3">
+              <img
+                class="w-100"
+                src="/uploads/<%= product?.images[4] %>"
+                alt="Sale"
+              />
+            </div>
+          </div>
+        </div>
       </div>
-      
+      <div class="col-md-7">
+        <div class="main-description px-2">
+          <div class="product-title text-bold my-3"><%= product?.name %></div>
 
-              
-      
- <%- include('../layouts/userFooter.ejs') %>
+          <div class="product-info">
+            <p>&#8377; <%= product?.price %></p>
+            <div class="buttons d-flex flex-row mt-5 gap-3">
+              <!-- Update the onclick attribute to call the addToCart function -->
+              <button
+                onclick="addToCart('<%= product._id %>')"
+                class="custom-btn" type="button"
+              >
+                Add to cart
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-details my-4">
+          <p class="details-title text-color mb-1">Product Details</p>
+          <p class="description"><%= product?.description %></p>
+        </div>
+        <a href="#">
+          <span class="bi bi-check2-circle"></span>
+        </a>
+     
+        <ul>
+ <div class="sizes-and-prices my-4">
+          <% if (sizes && sizes.length > 0) { %>
+            <h3><span class="bi bi-list"></span> Sizes and Prices</h3>
+            <% sizes.forEach(size => { %>
+              <div class="row mb-3">
+                <div class="col-6 size">
+                  <%= size %>
+                </div>
+                <div class="col-6 price">
+                  &#8377; <%= getProductPrice(size) %>
+                </div>
+              </div>
+            <% }); %>
+          <% } else { %>
+            <p>No sizes available for this product</p>
+          <% } %>
+        </div>
+
+      </div>
+
+
+<% function getProductPrice(size) { %>
+  <% const quantitiesData = quantities; %>
+  <% if (quantitiesData && quantitiesData.length > 0) { %>
+    <% const quantity = quantitiesData.find((q) => q.product._id.toString() === product._id.toString()); %>
+    <% if (quantity) { %>
+      <% const sizeObj = quantity.quantities.find((q) => q.size === size); %>
+      <% return sizeObj ? `Price: ₹ ${sizeObj.productPrice}` : "N/A"; %>
+    <% } else { %>
+      <% return "N/A"; %>
+    <% } %>
+  <% } else { %>
+    <% return "N/A"; %>
+  <% } %>
+<% } %>
+
+
+
+
+      <script>
+
+
+
+
+              function addToCart(productId) {
+                console.log("Adding product to cart with ID:", productId);
+
+                fetch(`/cart/${productId}`, {
+                  method: "GET", // Change to POST as we are updating data on the server
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                })
+                  .then((response) => response.json())
+                  .then((data) => {
+                    console.log("Response data:", data);
+
+                    // Handle the response data
+                    if (data.status === "success") {
+                      alert(data.message); // Show a success message
+                      // Optionally, you can redirect the user to the cart page after adding the product to the cart
+                      window.location.href = `/productdetail/${productId}`;
+                    } else {
+                      alert(data.message); // Show an error message
+                    }
+                  })
+                  .catch((error) => {
+                    console.error(error);
+                  });
+              }
+      </script>
+
+      <%- include('../layouts/userFooter.ejs') %>
+    </div>
+  </div>
+</body>

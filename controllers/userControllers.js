@@ -1,12 +1,14 @@
-const { UserDefinedMessageListInstance } = require('twilio/lib/rest/api/v2010/account/call/userDefinedMessage');
-const User = require('../models/usermodel');
-const Product = require('../models/productmodel')
-const bcrypt = require('bcrypt');
+const {
+  UserDefinedMessageListInstance,
+} = require("twilio/lib/rest/api/v2010/account/call/userDefinedMessage");
+const User = require("../models/usermodel");
+const Product = require("../models/productmodel");
+const Address=require("../models/addressmodell")
+const bcrypt = require("bcrypt");
 
-const Quantity = require('../models/quantitymodel')
+const Quantity = require("../models/quantitymodel");
 
-
-const twilio = require('twilio')
+const twilio = require("twilio");
 const dotenv = require("dotenv");
 dotenv.config();
 const accountSid = process.env.accountSid;
@@ -24,7 +26,7 @@ const securePassword = async (password) => {
 
 const loadRegister = async (req, res) => {
   try {
-    res.render('register');
+    res.render("register");
   } catch (error) {
     console.log(error);
   }
@@ -32,19 +34,18 @@ const loadRegister = async (req, res) => {
 
 const insertUser = async (req, res) => {
   try {
-    const { email,District,pincode,HouseName,password } = req.body;
+    const {name, email,  password } = req.body;
     const existingUser = await User.findOne({ email: email });
     if (existingUser) {
       return res.render("register", { message: "Email already exists" });
     }
 
-
     const spassword = await securePassword(password);
-    const addressData = {
-      District,
-      pincode,
-      HouseName
-    };
+    // const addressData = {
+    //   District,
+    //   pincode,
+    //   HouseName,
+    // };
 
     // const addressData = {
     //   District,
@@ -56,11 +57,9 @@ const insertUser = async (req, res) => {
       username: req.body.name,
       email: req.body.email,
       mobile: req.body.mobile,
-      Address: [addressData], // Store the address object in an array
+      
       password: spassword,
     });
-
-    
 
     // Validation
 
@@ -89,7 +88,12 @@ const insertUser = async (req, res) => {
       return res.render("register", { message: "Passwords do not match" });
     }
 
-    if (!user.username || !user.email || !user.mobile || !user.Address[0].District || !user.Address[0].pincode || !user.Address[0].HouseName) {
+    if (
+      !user.username ||
+      !user.email ||
+      !user.mobile 
+      
+    ) {
       return res.render("register", { message: "all fields should be filled" });
     }
     // Generate a random OTP
@@ -110,10 +114,10 @@ const insertUser = async (req, res) => {
       username: user.username,
       email: user.email,
       mobile: user.mobile,
-      Address:user.Address,
+      
       password: user.password,
     };
-// console.log(req.session.user)
+    // console.log(req.session.user)
     res.render("verifyotp");
   } catch (error) {
     console.log(error.message);
@@ -132,29 +136,26 @@ const loadVerifyOTP = async (req, res) => {
 // Login user method
 const loginLoad = async (req, res) => {
   try {
-    res.render('login');
+    res.render("login");
   } catch (error) {
     console.log(error.message);
   }
 };
 
-
-
-
 //otp timer
 const startOtpTimer = (req, res, next) => {
-  const otpExpiryTime = 1 * 60 * 1000;//Set OTP expiry time to 1 minutes (in milliseconds)
+  const otpExpiryTime = 1 * 60 * 1000; //Set OTP expiry time to 1 minutes (in milliseconds)
   // Set the OTP timer in the session
   if (!req.session.otpTimer) {
     req.session.otpTimer = otpExpiryTime;
 
     // Start the timer
     setTimeout(() => {
-      req.session.otpTimer = undefined;// Clear the OTP timer after expiry
+      req.session.otpTimer = undefined; // Clear the OTP timer after expiry
     }, otpExpiryTime);
   }
   next();
-}
+};
 
 const verifyOtp = async (req, res) => {
   try {
@@ -168,24 +169,23 @@ const verifyOtp = async (req, res) => {
         username: userData.username,
         email: userData.email,
         mobile: userData.mobile,
-        Address:userData.Address,
+       
         password: userData.password,
         is_admin: userData.is_admin,
       });
 
       await user.save();
       // return res.redirect('/login');
-      return res.render('login', { message: 'Register successful' });
+      return res.render("login", { message: "Register successful" });
     } else {
       // Incorrect OTP
-      return res.render('verifyotp', { message: 'Incorrect OTP' });
+      return res.render("verifyotp", { message: "Incorrect OTP" });
     }
   } catch (error) {
     console.log(error.message);
-    return res.render('verifyotp', { message: 'An error occurred' });
+    return res.render("verifyotp", { message: "An error occurred" });
   }
 };
-
 
 //Resend Otp
 
@@ -195,7 +195,7 @@ const resendOtp = async (req, res) => {
     console.log(otp);
     // Store the OTP and user data in the session
     req.session.otp = otp;
-    const userData = req.session.user
+    const userData = req.session.user;
 
     if (!userData) {
       res.status(400).json({ message: "Invalid or expired session" });
@@ -204,19 +204,17 @@ const resendOtp = async (req, res) => {
       username: userData.name,
       email: userData.email,
       mobile: userData.mobile,
-      Address: userData.Address,
+      
       password: userData.password,
       is_admin: userData.is_admin,
     };
 
-    res.render('verifyotp', { message: "OTP resent successfully" });
+    res.render("verifyotp", { message: "OTP resent successfully" });
   } catch (error) {
     console.log(error.message);
     return res.render("register", { message: "All fields should be filled" });
   }
-}
-
-
+};
 
 // const verifyLogin = async (req, res) => {
 //   try {
@@ -244,7 +242,6 @@ const resendOtp = async (req, res) => {
 
 //       const passwordMatch = await bcrypt.compare(password, userData.password);
 
-
 //       if (passwordMatch) {
 //         req.session.user = {
 //           name: userData.name,
@@ -253,8 +250,7 @@ const resendOtp = async (req, res) => {
 //            District: userData.District,
 //       pincode: userData.pincode,
 //       HouseName:userData.HouseName,
-       
-          
+
 //         };
 //         return res.redirect('/home');
 //       } else {
@@ -275,7 +271,6 @@ const verifyLogin = async (req, res) => {
     // Validate form inputs using express-validator
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-    
       return res.redirect(
         "/login",
         "Invalid input. Please check your email and password."
@@ -285,9 +280,9 @@ const verifyLogin = async (req, res) => {
     const { email, password } = req.body;
 
     const userData = await User.findOne({ email });
-
+    
     if (!userData) {
-     return res.render("login", { message: "Invalid email" });
+      return res.render("login", { message: "Invalid email" });
     }
 
     if (userData.is_blocked) {
@@ -297,40 +292,36 @@ const verifyLogin = async (req, res) => {
     const passwordMatch = await bcrypt.compare(password, userData.password);
 
     if (!passwordMatch) {
-       res.render("login", { message: "password is wrong" });
+      res.render("login", { message: "password is wrong" });
     }
 
     // Store relevant user data in the session (avoid storing the password)
     req.session.user_id = userData._id;
     req.session.user = {
-      name: userData.name,
+      id: userData._id,
+      name: userData.username,
       email: userData.email,
       mobile: userData.mobile,
-      District: userData.District,
-      pincode: userData.pincode,
-      HouseName: userData.HouseName,
       // Avoid storing the password here
     };
 
     return res.redirect("/home"); // Redirect to the home page after successful login
   } catch (error) {
-     res.render("login", { message: "An error occured during login" });
+    res.render("login", { message: "An error occured during login" });
   }
 };
-
 
 const loadHome = async (req, res) => {
   try {
     const User = req.session.user;
-    res.render('home', { User });
-
+    res.render("home", { User });
   } catch (error) {
     console.log(error.message);
   }
 };
 const loadForgotPassword = async (req, res) => {
   try {
-    res.render('forgotpassword');
+    res.render("forgotpassword");
   } catch (error) {
     console.log(error.message);
   }
@@ -342,12 +333,12 @@ const forgotVerifyNumber = async (req, res) => {
     const user = await User.findOne({ mobile: req.session.mobile });
     req.session.user = user;
     if (!user) {
-      res.render('forgotpassword', { message: "user not registered" });
+      res.render("forgotpassword", { message: "user not registered" });
     } else {
       const forgototp = Math.floor(100000 + Math.random() * 900000);
       req.session.forgotOtp = forgototp;
       console.log(forgototp);
-      res.render('forgotOtpVerify');
+      res.render("forgotOtpVerify");
     }
   } catch (error) {
     console.log(error.message);
@@ -369,12 +360,14 @@ const forgotResendOtp = async (req, res) => {
     console.log(resendOtp);
     req.session.forgotOtp = resendOtp;
     console.log("testing", req.session.forgotOtp);
-    res.render("forgotOtpVerify", { message: "OTP has been resent.", otp: req.session.forgotOtp });
+    res.render("forgotOtpVerify", {
+      message: "OTP has been resent.",
+      otp: req.session.forgotOtp,
+    });
   } catch (error) {
     console.log(error.message);
   }
 };
-
 
 const forgotOtpverify = async (req, res) => {
   console.log("test2", req.session.forgotOtp);
@@ -383,34 +376,29 @@ const forgotOtpverify = async (req, res) => {
     console.log(otp);
     if (otp == req.session.forgotOtp) {
       // OTP is correct, proceed with login
-      return res.render('resetpassword');
+      return res.render("resetpassword");
     } else {
       // Incorrect OTP
-      return res.render('forgotOtpVerify', { message: "Incorrect OTP" });
+      return res.render("forgotOtpVerify", { message: "Incorrect OTP" });
     }
   } catch (error) {
     console.log(error.message);
   }
 };
 
-  //reset password
-const loadrewritePassword = async (req, res)=>{
+//reset password
+const loadrewritePassword = async (req, res) => {
   try {
-    res.render('resetpassword')
+    res.render("resetpassword");
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
   }
-  
-}
-
-
-
-
+};
 
 const showProduct = async (req, res) => {
   try {
     const products = await Product.find({});
-    // console.log(products);
+    
     res.render("showProduct", { products });
   } catch (error) {
     console.log(error.message);
@@ -420,22 +408,31 @@ const showProduct = async (req, res) => {
 
 const productdetail = async (req, res) => {
   try {
-    // console.log(req.params);
     const productId = req.params.id;
+
     const product = await Product.findOne({ _id: productId });
+  
+
     if (!product) {
       console.log("not found");
     }
-    console.log(product);
-    
+
     const sizeInfo = await Quantity.findOne({ product: productId });
-    const sizes = sizeInfo ? sizeInfo.quantities.map((q)=> q.size): [];
-    res.render("productdetail", { product,sizes });
+    const sizes = sizeInfo ? sizeInfo.quantities.map((q) => q.size) : [];
+    
+    // Fetch the quantities data and pass it to the template
+    const quantitiesData = await Quantity.find({}).populate("product").exec();
+
+    res.render("productdetail", {
+      product,
+      sizes,
+      quantities: quantitiesData, // Pass the quantities array to the template
+    });
   } catch (error) {
     console.log(error);
   }
 };
-//load user profile
+
 // const loadUserProfile = async (req, res) => {
 //   try {
 //     if (!req.session.user) {
@@ -480,8 +477,6 @@ const productdetail = async (req, res) => {
 //   try {
 //     console.log("User ID from session:", req.session.user_id); // Add this line to check the value
 
-
-
 const loadUserProfile = async (req, res) => {
   try {
     // console.log("Session Data:", req.session);
@@ -496,10 +491,106 @@ const loadUserProfile = async (req, res) => {
     if (!user) {
       return res.redirect("/login");
     }
-
-    res.render("profile", { user });
+  const addressItem = await Address.find({ user: user_id });
+ console.log("Address Items:", addressItem);
+    res.render("profile", { user,addressItem });
   } catch (error) {
     console.log(error.message);
+  }
+};
+
+const showchangePassword = async (req, res) => {
+  try {
+    res.render("changepassword");
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
+const changePassword = async (req, res) => {
+  try {
+    const user_id = req.session.user_id;
+    const user = await User.findById(user_id);
+    
+
+    if (!user) {
+      return res.redirect("/login");
+    }
+
+    // const { currentPassword, newPassword, confirmPassword } = req.body;
+
+    const currentPassword = req.body.currentPassword
+    const newPassword = req.body.newPassword
+
+    const confirmPassword = req.body.confirmPassword
+  
+
+
+    if (newPassword !== confirmPassword) {
+      return res.render("changePassword", {
+        message: "New passwords do not match",
+      });
+    }
+    
+    // Check if the current password matches the stored hashed password
+    const passwordMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!passwordMatch) {
+      return res.render("changePassword", {
+        message: "Current password is incorrect",
+      });
+    }
+    // Hash the new password before saving
+    const newPasswordHash = await bcrypt.hash(newPassword, 10);
+    user.password = newPasswordHash;
+    await user.save();
+
+    return res.render("changePassword", {
+      message: "Password changed successfully",
+    });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+// Edit profile
+const editProfile = async (req, res) => {
+  try {
+    const user_id = req.session.user_id;
+    const user = await User.findById(user_id);
+
+    if (!user) {
+      return res.redirect("/login");
+    }
+
+    // Update user's profile data
+    user.username = req.body.username;
+    user.mobile = req.body.mobile;
+
+    // Validate inputs (similar to registration validation)
+    if (!user.mobile) {
+      return res.render("editprofile", {
+        message: "Mobile number must be filled",
+      });
+    }
+
+    if (!/^\d{10}$/.test(req.body.mobile)) {
+      return res.render("editprofile", {
+        message: "Mobile number must be 10 digits",
+      });
+    }
+
+    if (!req.body.username || /\d/.test(req.body.username)) {
+      return res.render("editprofile", {
+        message: "Invalid username format",
+      });
+    }
+
+    await user.save();
+
+    return res.redirect("/profile");
+  } catch (error) {
+    console.log(error.message);
+    return res.render("editprofile", { message: "An error occurred" });
   }
 };
 
@@ -507,7 +598,7 @@ const loadUserProfile = async (req, res) => {
 const userLogout = async (req, res) => {
   try {
     req.session.destroy();
-    res.redirect('/');
+    res.redirect("/");
   } catch (error) {
     console.log(error.message);
   }
@@ -532,5 +623,8 @@ module.exports = {
   showProduct,
   forgotResendOtp,
   productdetail,
-  loadUserProfile
+  loadUserProfile,
+  showchangePassword,
+  changePassword,
+  editProfile,
 };

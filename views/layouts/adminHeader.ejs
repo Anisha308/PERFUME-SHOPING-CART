@@ -5,6 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+<link rel="stylesheet" href="https://unpkg.com/@webpixels/css@1.1.5/dist/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.4.0/font/bootstrap-icons.min.css">
+    <!-- <link href="https://demo.dashboardpack.com/architectui-html-free/main.css" rel="stylesheet"></head> -->
 
 <script src="path/to/bootstrap.js"></script>
     <link rel="stylesheet" href="../../vendors/typicons/typicons.css">
@@ -25,6 +28,62 @@
         <a href="adminlogout" class="btn btn-danger" role="button">Logout</a>
     </nav>
 
+<div class="d-flex flex-row">
+    <div class="row">
+      <div class="col-md-6">
+        <nav class="sidebar sidebar-offcanvas" id="sidebar">
+          <!-- Sidebar content goes here -->
+          <ul class="nav">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">
+                <i class="typcn typcn-device-desktop menu-icon"></i>
+                <span class="menu-title">Dashboard</span>
+
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="collapse" href="/loadUser" aria-expanded="false"
+                aria-controls="ui-basic">
+                <i class="typcn typcn-document-text menu-icon"></i>
+                <span class="menu-title">user List</span>
+
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="collapse" href="/loadCategory" aria-expanded="false"
+                aria-controls="ui-basic">
+                <i class="typcn typcn-document-text menu-icon"></i>
+                <span class="menu-title">Category</span>
+
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" data-toggle="collapse" href="/productList" aria-expanded="false"
+                aria-controls="ui-basic">
+                <i class="typcn typcn-document-text menu-icon"></i>
+                <span class="menu-title">Product List</span>
+
+              </a>
+            </li>
+<li class="nav-item">
+  <a class="nav-link" data-toggle="collapse" href="/addquantity" aria-expanded="false"
+    aria-controls="ui-basic">
+    <i class="typcn typcn-document-text menu-icon"></i>
+    <span class="menu-title">Quantity List</span>
+  </a>
+</li>
+<li class="nav-item">
+  <a class="nav-link" data-toggle="collapse" href='/displayOrder' aria-expanded="false"
+    aria-controls="ui-basic">
+    <i class="typcn typcn-document-text menu-icon"></i>
+    <span class="menu-title">Order List</span>
+  </a>
+</li>
+          </ul>
+        </nav>
+      </div>
+    </div>
 
 
 

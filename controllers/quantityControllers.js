@@ -23,13 +23,14 @@ const displayAddQuantity = async (req, res) => {
 const addQuantity = async (req, res) => {
   try {
     const { product, size, productPrice, stock } = req.body;
-  
+
     const quantityObj = {
       product,
       size,
       productPrice,
       stock,
     };
+
     const isProduct = await Quantity.findOne({ product });
 
     if (isProduct) {
@@ -74,9 +75,6 @@ const showQuantity = async (req, res) => {
       categoryMap.set(category._id.toString(), category.name);
     });
 
-    //  function getCategoryName (category)  {
-    //     return category.toString()
-    //   }
     function getCategoryName(category) {
       return category
         ? categoryMap.get(category.toString())
@@ -84,9 +82,16 @@ const showQuantity = async (req, res) => {
     }
 
     const activeMenuItem = "/showquantity";
+
+    products.forEach((product) => {
+      const productStock = product.product.stock;
+      product.stock = productStock;
+    });
+
     res.render("showquantity", {
       title: "product with quantity",
       products,
+    
       getCategoryName,
       layout: "layouts/adminHome",
       activeMenuItem,
@@ -96,39 +101,8 @@ const showQuantity = async (req, res) => {
   }
 };
 
-
-//display size to the frontend
-const getsize = async (req, res) => {
-  try {
-    //Get the product id and the selected size from the query parameters
-    const { productId, Size } = req.query;
-    //Find the quantity document by the product id and select only the quantities field
-    const variant = await Quantity.findOne(
-      { product: productId },
-      { quantitiies: 1 }
-    );
-
-    //Filter the variants array and get only the ones that have the selected size
-    let quant = variant.quantities.filter(
-      (variantElement) => variantElement.size === Size
-    );
-    console.log(quant);
-    //Send back the colors array as a JSON response
-    res.json(colors);
-  } catch (error) {
-    console.log(error.message);
-  }
-}
-
-
-
-
-
-
-
 module.exports = {
   displayAddQuantity,
   addQuantity,
   showQuantity,
-  getsize
 };

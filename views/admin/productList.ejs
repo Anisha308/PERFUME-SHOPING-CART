@@ -46,65 +46,12 @@
 <%- include('../layouts/adminHeader.ejs') %>
 
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-<div class="d-flex flex-row">
-  <div class="row">
-    <div class="col-md-6">
-      <nav class="sidebar sidebar-offcanvas" id="sidebar">
-        <!-- Sidebar content goes here -->
-        <ul class="nav">
-          <li class="nav-item">
-            <a class="nav-link" href="index.html">
-              <i class="typcn typcn-device-desktop menu-icon"></i>
-              <span class="menu-title">Dashboard</span>
-
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="/loadUser" aria-expanded="false" aria-controls="ui-basic">
-              <i class="typcn typcn-document-text menu-icon"></i>
-              <span class="menu-title">user List</span>
-
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="/loadCategory" aria-expanded="false"
-              aria-controls="ui-basic">
-              <i class="typcn typcn-document-text menu-icon"></i>
-              <span class="menu-title">Category</span>
-
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="/productList" aria-expanded="false"
-              aria-controls="ui-basic">
-              <i class="typcn typcn-document-text menu-icon"></i>
-              <span class="menu-title">Product List</span>
-
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-toggle="collapse" href="/addquantity" aria-expanded="false"
-              aria-controls="ui-basic">
-              <i class="typcn typcn-document-text menu-icon"></i>
-              <span class="menu-title">Quantity List</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
-  </div>
-<section class="content-main p-5">
-  <div class="content-header">
-    <div>
-      <h2 class="content-title card-title" style="font-size: 25px;">Product Data</h2>
-      <p style="font-size: 14px;">Add, edit or Change Status</p>
-    </div>
-  </div>
 
 <!-- Add Product button on the right corner -->
 <div class="right-corner-container">
+  <a href="/addProduct">
   <button class="btn btn-dark">Add Product</button>
+  </a>
 </div>
     
       <div class="table-responsive p-5 shadow mb-5 bg-white rounded">
@@ -179,11 +126,10 @@
     <i class="fa fa-eye black-icon" aria-hidden="true"></i>
   </a>
 
-
                 <% } else { %>
                
   <a href="/changeProductstatus?id=<%= item._id %>">
-    <img src="/images/eyeclose.png" alt="Eye Icon" class="eye-icon" style="height: font: 25px;; width: 25px;">
+    <img src="/images/eyeclose.png" alt="Eye Icon" class="eye-icon" style=" font: 25px;; width: 25px;">
   </a>
 
                 <% } %>

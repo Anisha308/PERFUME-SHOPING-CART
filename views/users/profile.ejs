@@ -1,117 +1,146 @@
-
 <%- include('../layouts/userHeader.ejs') %>
 
-<body style="background-color: white">
-    <section style="background-color: white">
-        <div class="container py-5">
-            <div class="row mb-4">
-                <div class="col text-center">
-                    <h2 style="font-size: 30px;">Your Account</h2>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-lg-4">
-                    <div class="card mb-4">
-                        <div class="card-body text-center">
-                            <img src="images/icons/user.png" alt="avatar" class="rounded-circle"
-                                style="width: 90px; object-fit: cover;">
-                            <h5 class="my-3">
-                                <%= user.username %>
-                            </h5>
-                            <p class=" mb-1">
-                                <%= user.email %>
-                            </p>
-                            <p class=" mb-0">
-                                <%= user.mobile %>
-                            </p>
-                        </div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item text-center">
-                                <button type="button" class="btn btn-danger" onclick="location.href='/logout';">SIGN
-                                    OUT</button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-8">
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <div class="row mb-2">
-                                <div class="col-sm-3">
-                                    <p class="mb-0"><strong>Full Name</strong></p>
-                                </div>
-                                <div class="col-sm-9">
-                                    <p class=" mb-0">
-                                        <%= user.username %>
-                                    </p>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row mb-2">
-                                <div class="col-sm-3">
-                                    <p class="mb-0"><strong>Email</strong></p>
-                                </div>
-                                <div class="col-sm-9">
-                                    <p class=" mb-0">
-                                        <%= user.email %>
-                                    </p>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row mb-2">
-                                <div class="col-sm-3">
-                                    <p class="mb-0"><strong>Phone</strong></p>
-                                </div>
-                                <div class="col-sm-9">
-                                    <p class=" mb-0">
-                                        <%= user.mobile %>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <% if (user && user.Address && Array.isArray(user.Address)) { %>
-                        <div class="card mb-4">
-                            <div class="card-body">
-                                <h5 class="mb-4"><strong>Address</strong></h5>
-                                <hr>
-                                <% user.Address.forEach(address=> { %>
-                                    <div class="row mb-2">
-                                        <div class="col-sm-3">
-                                            <p class="mb-0"><strong>District</strong></p>
-                                        </div>
-                                        <div class="col-sm-9">
-                                            <p class=" mb-0">
-                                                <%= address.District %>
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-2">
-                                        <div class="col-sm-3">
-                                            <p class="mb-0"><strong>Pincode</strong></p>
-                                        </div>
-                                        <div class="col-sm-9">
-                                            <p class=" mb-0">
-                                                <%= address.pincode %>
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div class="row mb-2">
-                                        <div class="col-sm-3">
-                                            <p class="mb-0"><strong>HouseName</strong></p>
-                                        </div>
-                                        <div class="col-sm-9">
-                                            <p class=" mb-0">
-                                                <%= address.HouseName %>
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <% }); %>
-                            </div>
-                        </div>
-                        <% } %>
-                </div>
+<section style="background-color: white">
+    <div class="container py-5">
+        <div class="row mb-4">
+            <div class="col text-center">
+                <h2 style="font-size: 30px;">Your Account</h2>
             </div>
         </div>
-    </section>
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-body text-center">
+                        <img src="images/icons/user.png" alt="avatar" class="rounded-circle"
+                            style="width: 90px; object-fit: cover;">
+                        <h5 class="my-3">
+                            <%= user.username %>
+                        </h5>
+                        <p class=" mb-1">
+                            <%= user.email %>
+                        </p>
+                        <p class=" mb-0">
+                            <%= user.mobile %>
+                        </p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item text-center">
+                            <button type="button" class="btn btn-danger" onclick="location.href='/logout';">SIGN OUT</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-sm-3">
+                                <p class="mb-0"><strong>Full Name</strong></p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class=" mb-0">
+                                    <%= user.username %>
+                                </p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row mb-2">
+                            <div class="col-sm-3">
+                                <p class="mb-0"><strong>Email</strong></p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class=" mb-0">
+                                    <%= user.email %>
+                                </p>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row mb-2">
+                            <div class="col-sm-3">
+                                <p class="mb-0"><strong>Phone</strong></p>
+                            </div>
+                            <div class="col-sm-9">
+                                <p class=" mb-0">
+                                    <%= user.mobile %>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Edit Profile Modal -->
+                        <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <!-- Edit Profile Form -->
+                                        <form id="editProfileForm" method="post" action='/editprofile'>
+                                            <div class="mb-3">
+                                                <label for="fullName" class="form-label">Full Name</label>
+                                                <input type="text" class="form-control" id="fullName" name="fullName" value="<%= user.username %>" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="email" class="form-label">Email</label>
+                                                <input type="email" class="form-control" id="email" name="email" value="<%= user.email %>" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="phone" class="form-label">Phone</label>
+                                                <input type="tel" class="form-control" id="phone" name="phone" value="<%= user.mobile %>" required>
+                                            </div>
+                                            <!-- Add more fields as needed -->
+                                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <a href="#" data-bs-toggle="modal" data-bs-target="#editProfileModal" style="color: black">Edit Profile</a>
+
+                <div>
+                    <a href='/address' class="link-dark">Your Address</a>
+                </div>
+                <div>
+                    <a href="/orderlist" style="color: Black">Your Orders</a>
+                </div>
+
+            </div>
+            <a href="/changepassword" style="color: Black">Change Password??</a>
+
+        </div>
+    </div>
+</section>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#editProfileForm').on('submit', function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Serialize form data
+            const formData = $(this).serialize();
+
+            // Perform AJAX request to update profile
+            $.ajax({
+                type: 'POST',
+                url: '/editprofile',
+                data: formData,
+                success: function (response) {
+                    // Handle success, e.g., show a success message or reload the page
+                },
+                error: function (error) {
+                    // Handle error, e.g., show an error message
+                }
+            });
+        });
+    });
+</script>
+
+
 <%- include('../layouts/userFooter.ejs') %>
